@@ -9,7 +9,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.soroushmehraein.newssearch.SearchActivity"
+    tools:context=".activities.SearchActivity"
     tools:showIn="@layout/activity_search">
 
     <EditText
@@ -38,5 +38,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/gvResults"
         android:layout_below="@+id/btnSearch"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:numColumns="4"/>
 </RelativeLayout>

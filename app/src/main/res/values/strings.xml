@@ -3,4 +3,6 @@
     <string name="action_settings">Settings</string>
     <string name="search_query_hint">Enter search query</string>
     <string name="search">Search</string>
+    <string name="article_thumbnail">Article Thumbnail</string>
+    <string name="title_activity_article">ArticleActivity</string>
 </resources>
