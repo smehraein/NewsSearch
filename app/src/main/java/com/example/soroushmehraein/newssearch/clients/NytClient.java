@@ -1,5 +1,8 @@
 package com.example.soroushmehraein.newssearch.clients;
 
+import android.content.Context;
+
+import com.example.soroushmehraein.newssearch.R;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -11,7 +14,6 @@ import com.loopj.android.http.RequestParams;
  */
 public class NytClient {
     private static NytClient ourInstance = new NytClient();
-    private static final String API_KEY = "d461aaa978be421bbe5990fda1d8cd53";
     private static final String BASE_URL = "http://api.nytimes.com/svc/search/v2/articlesearch.json";
 
     public static NytClient getInstance() {
@@ -21,8 +23,9 @@ public class NytClient {
     private NytClient() {
     }
 
-    public void getArticlesAsync(RequestParams params, JsonHttpResponseHandler handler) {
-        params.put("api_key", API_KEY);
+    public void getArticlesAsync(Context context, RequestParams params, JsonHttpResponseHandler handler) {
+        String api_key = context.getResources().getString(R.string.nyt_api_key);
+        params.put("api_key", api_key);
         params.put("page", 0);
         AsyncHttpClient client = new AsyncHttpClient();
 

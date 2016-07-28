@@ -98,7 +98,7 @@ public class SearchActivity extends AppCompatActivity {
 
         NytClient nytClient = NytClient.getInstance();
 
-        nytClient.getArticlesAsync(filters.toRequestParams(), new JsonHttpResponseHandler(){
+        nytClient.getArticlesAsync(this, filters.toRequestParams(), new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 JSONArray articleJsonResults;
