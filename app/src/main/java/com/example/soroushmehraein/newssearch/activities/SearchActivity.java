@@ -14,10 +14,10 @@ import android.widget.GridView;
 
 import com.example.soroushmehraein.newssearch.R;
 import com.example.soroushmehraein.newssearch.adapters.ArticleArrayAdapter;
+import com.example.soroushmehraein.newssearch.clients.NytClient;
 import com.example.soroushmehraein.newssearch.models.Article;
-import com.loopj.android.http.AsyncHttpClient;
+import com.example.soroushmehraein.newssearch.models.SearchFilters;
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -93,16 +93,12 @@ public class SearchActivity extends AppCompatActivity {
     public void onArticleSearch(View view) {
         String query = etQuery.getText().toString();
 
-//        Toast.makeText(this, "Searching for " + query, Toast.LENGTH_LONG).show();
-        AsyncHttpClient client = new AsyncHttpClient();
-        String url = "http://api.nytimes.com/svc/search/v2/articlesearch.json";
+        SearchFilters filters = SearchFilters.getInstance();
+        filters.setQuery(query);
 
-        RequestParams requestParams = new RequestParams();
-        requestParams.put("api_key", "d461aaa978be421bbe5990fda1d8cd53");
-        requestParams.put("page", 0);
-        requestParams.put("q", query);
+        NytClient nytClient = NytClient.getInstance();
 
-        client.get(url, requestParams, new JsonHttpResponseHandler(){
+        nytClient.getArticlesAsync(filters.toRequestParams(), new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 JSONArray articleJsonResults;
