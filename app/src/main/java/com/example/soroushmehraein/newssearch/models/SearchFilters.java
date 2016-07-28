@@ -53,7 +53,20 @@ public class SearchFilters {
     }
 
     public void setNewsDesks(ArrayList<String> newsDesks) {
-        this.newsDesks = newsDesks;
+        ArrayList<String> formattedNewsDesks = new ArrayList<>();
+        for (int i = 0; i < newsDesks.size(); i++) {
+            formattedNewsDesks.add("\"" + newsDesks.get(i) + "\"");
+        }
+        this.newsDesks = formattedNewsDesks;
+    }
+
+    public void addNewsDesk(String newsDesk) {
+        String formattedNewsDesk = "\"" + newsDesk + "\"";
+        newsDesks.add(formattedNewsDesk);
+    }
+
+    public void removeNewsDesk(int position) {
+        newsDesks.remove(position);
     }
 
     public void setQuery(String query) {
