@@ -4,7 +4,14 @@ import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import com.example.soroushmehraein.newssearch.DatePickerFragment;
@@ -13,9 +20,10 @@ import com.example.soroushmehraein.newssearch.models.SearchFilters;
 
 import java.util.Calendar;
 
-public class FilterActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
+public class FilterActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, AdapterView.OnItemSelectedListener {
 
     TextView tvStartDate;
+    Spinner spSort;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +32,41 @@ public class FilterActivity extends AppCompatActivity implements DatePickerDialo
 
         tvStartDate = (TextView) findViewById(R.id.tvStartDate);
         tvStartDate.setText(SearchFilters.getInstance().getStartDateHumanString());
+
+        spSort = (Spinner) findViewById(R.id.spSort);
+        assert spSort != null;
+        spSort.setOnItemSelectedListener(this);
+        setSpinnerToValue(spSort, SearchFilters.getInstance().getSort());
+
+        createCheckboxes();
     }
+
+    private void createCheckboxes() {
+        LinearLayout layout = (LinearLayout) findViewById(R.id.llCheckbox);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        for (int i = 0; i < SearchFilters.NEWS_DESKS.size(); i++) {
+            String newsDesk = SearchFilters.NEWS_DESKS.get(i);
+            CheckBox checkbox = new CheckBox(this);
+            checkbox.setLayoutParams(layoutParams);
+            checkbox.setText(newsDesk);
+            checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        SearchFilters.getInstance().addNewsDesk((String) buttonView.getText());
+                    } else {
+                        SearchFilters.getInstance().removeNewsDesk((String) buttonView.getText());
+                    }
+                }
+            });
+            if (SearchFilters.getInstance().getNewsDesks().contains(newsDesk)) {
+                checkbox.setChecked(true);
+            }
+            assert layout != null;
+            layout.addView(checkbox);
+        }
+    }
+
 
     // attach to an onclick handler to show the date picker
     public void showDatePickerDialog(View v) {
@@ -42,5 +84,28 @@ public class FilterActivity extends AppCompatActivity implements DatePickerDialo
         c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
         SearchFilters.getInstance().setStartDate(c);
         tvStartDate.setText(SearchFilters.getInstance().getStartDateHumanString());
+    }
+
+    public void setSpinnerToValue(Spinner spinner, String value) {
+        int index = 0;
+        SpinnerAdapter adapter = spinner.getAdapter();
+        for (int i = 0; i < adapter.getCount(); i++) {
+            if (adapter.getItem(i).equals(value)) {
+                index = i;
+                break; // terminate loop
+            }
+        }
+        spinner.setSelection(index);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String sort = (String) parent.getItemAtPosition(position);
+        SearchFilters.getInstance().setSort(sort);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 }

@@ -17,8 +17,7 @@ import java.util.Locale;
  * Date: 7/28/16
  */
 public class SearchFilters {
-    public static final List<String> NEWS_DESKS = Arrays.asList("Arts & Leisure", "Business",
-            "Culture", "Energy", "Movies", "Opinion", "Politics", "Science", "Technology");
+    public static final List<String> NEWS_DESKS = Arrays.asList("Business","Movies", "Opinion", "Politics", "Technology");
 
     private String sort;
     private Calendar startDate;
@@ -85,8 +84,8 @@ public class SearchFilters {
         newsDesks.add(formattedNewsDesk);
     }
 
-    public void removeNewsDesk(int position) {
-        newsDesks.remove(position);
+    public void removeNewsDesk(String newsDesk) {
+        newsDesks.remove(newsDesk);
     }
 
     public void setQuery(String query) {

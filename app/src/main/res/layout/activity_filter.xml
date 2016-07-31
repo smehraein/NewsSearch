@@ -25,4 +25,22 @@
         android:id="@+id/tvStartDate"
         android:layout_below="@+id/btnSetDate"
         android:layout_centerHorizontal="true" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spSort"
+        android:layout_below="@+id/tvStartDate"
+        android:entries="@array/sort_values"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/spSort"
+        android:id="@+id/llCheckbox"
+        android:layout_centerHorizontal="true">
+    </LinearLayout>
 </RelativeLayout>
