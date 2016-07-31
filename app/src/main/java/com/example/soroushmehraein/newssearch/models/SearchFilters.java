@@ -1,5 +1,7 @@
 package com.example.soroushmehraein.newssearch.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.loopj.android.http.RequestParams;
@@ -15,7 +17,7 @@ import java.util.Locale;
  * Project: NewsSearch
  * Date: 7/28/16
  */
-public class SearchFilters {
+public class SearchFilters implements Parcelable {
     public enum NEWS {
         Business, Movies, Opinion, Politics, Technology
     }
@@ -29,23 +31,12 @@ public class SearchFilters {
 
     private SimpleDateFormat dateFormatHuman = new SimpleDateFormat("MM/dd/yy", Locale.US);
     private static final String SORT_NEWEST = "newest";
-    private static final String SORT_OLDEST = "oldest";
-    private static SearchFilters ourInstance = new SearchFilters();
 
-
-    public static SearchFilters getInstance() {
-        return ourInstance;
-    }
-
-    private SearchFilters() {
+    public SearchFilters() {
         sort = SORT_NEWEST;
         startDate = Calendar.getInstance();
         startDate.add(Calendar.YEAR, -1);
         newsDesksMap = new HashMap<>();
-    }
-
-    public String getSort() {
-        return sort;
     }
 
     public Boolean checkNewsDesk(NEWS desk) {
@@ -75,6 +66,10 @@ public class SearchFilters {
 
     public void setSort(String sort) {
         this.sort = sort;
+    }
+
+    public String getSort() {
+        return sort;
     }
 
     public void setStartDate(Calendar startDate) {
@@ -107,4 +102,40 @@ public class SearchFilters {
         String desks = TextUtils.join(" ", newsDesks);
         return String.format("news_desk:(%s)", desks);
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.sort);
+        dest.writeSerializable(this.startDate);
+        dest.writeSerializable(this.newsDesksMap);
+        dest.writeString(this.query);
+        dest.writeSerializable(this.dateFormatQuery);
+        dest.writeSerializable(this.dateFormatHuman);
+    }
+
+    protected SearchFilters(Parcel in) {
+        this.sort = in.readString();
+        this.startDate = (Calendar) in.readSerializable();
+        this.newsDesksMap = (HashMap<String, Boolean>) in.readSerializable();
+        this.query = in.readString();
+        this.dateFormatQuery = (SimpleDateFormat) in.readSerializable();
+        this.dateFormatHuman = (SimpleDateFormat) in.readSerializable();
+    }
+
+    public static final Parcelable.Creator<SearchFilters> CREATOR = new Parcelable.Creator<SearchFilters>() {
+        @Override
+        public SearchFilters createFromParcel(Parcel source) {
+            return new SearchFilters(source);
+        }
+
+        @Override
+        public SearchFilters[] newArray(int size) {
+            return new SearchFilters[size];
+        }
+    };
 }

@@ -30,10 +30,14 @@ import cz.msebera.android.httpclient.Header;
 public class SearchActivity extends AppCompatActivity {
 
     public static String INTENT_ARTICLE = "article";
+    public static String INTENT_FILTER = "filter";
+    public static int FILTER_CODE = 100;
+
 
     EditText etQuery;
     GridView gvResults;
     Button btnSearch;
+    SearchFilters filters;
 
     ArrayList<Article> articles;
     ArticleArrayAdapter adapter;
@@ -44,6 +48,9 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        filters = new SearchFilters();
+
         setupViews();
     }
 
@@ -93,7 +100,6 @@ public class SearchActivity extends AppCompatActivity {
     public void onArticleSearch(View view) {
         String query = etQuery.getText().toString();
 
-        SearchFilters filters = SearchFilters.getInstance();
         filters.setQuery(query);
 
         NytClient nytClient = NytClient.getInstance();
@@ -116,6 +122,16 @@ public class SearchActivity extends AppCompatActivity {
 
     public void showFilters(MenuItem item) {
         Intent intent = new Intent(SearchActivity.this, FilterActivity.class);
-        startActivity(intent);
+        intent.putExtra(INTENT_FILTER, filters);
+        startActivityForResult(intent, FILTER_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == FILTER_CODE) {
+            if (resultCode == RESULT_OK) {
+                filters = data.getParcelableExtra(INTENT_FILTER);
+            }
+        }
     }
 }

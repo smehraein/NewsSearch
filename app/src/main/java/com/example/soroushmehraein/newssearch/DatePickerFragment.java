@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 
-import com.example.soroushmehraein.newssearch.models.SearchFilters;
+import com.example.soroushmehraein.newssearch.activities.FilterActivity;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -21,7 +21,8 @@ public class DatePickerFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        final Calendar c = SearchFilters.getInstance().getStartDate();
+        final Calendar c = (Calendar) getArguments().getSerializable(FilterActivity.INTENT_CALENDAR);
+        assert c != null;
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH);
         int day = c.get(Calendar.DAY_OF_MONTH);

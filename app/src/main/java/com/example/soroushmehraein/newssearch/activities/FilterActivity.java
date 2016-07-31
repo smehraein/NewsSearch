@@ -1,6 +1,7 @@
 package com.example.soroushmehraein.newssearch.activities;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -22,21 +23,26 @@ import java.util.Calendar;
 
 public class FilterActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, AdapterView.OnItemSelectedListener {
 
+    public static String INTENT_CALENDAR = "calendar";
+
     TextView tvStartDate;
     Spinner spSort;
+    SearchFilters filters;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter);
 
+        filters = getIntent().getParcelableExtra(SearchActivity.INTENT_FILTER);
+
         tvStartDate = (TextView) findViewById(R.id.tvStartDate);
-        tvStartDate.setText(SearchFilters.getInstance().getStartDateHumanString());
+        tvStartDate.setText(filters.getStartDateHumanString());
 
         spSort = (Spinner) findViewById(R.id.spSort);
         assert spSort != null;
         spSort.setOnItemSelectedListener(this);
-        setSpinnerToValue(spSort, SearchFilters.getInstance().getSort());
+        setSpinnerToValue(spSort, filters.getSort());
 
         createCheckboxes();
     }
@@ -54,10 +60,10 @@ public class FilterActivity extends AppCompatActivity implements DatePickerDialo
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     String newsDesk = (String) buttonView.getText();
                     SearchFilters.NEWS newsDeskEnum = SearchFilters.NEWS.valueOf(newsDesk);
-                    SearchFilters.getInstance().setNewsDesk(newsDeskEnum, isChecked);
+                    filters.setNewsDesk(newsDeskEnum, isChecked);
                 }
             });
-            Boolean checked = SearchFilters.getInstance().checkNewsDesk(newsDesk);
+            Boolean checked = filters.checkNewsDesk(newsDesk);
             checkbox.setChecked(checked);
             assert layout != null;
             layout.addView(checkbox);
@@ -68,6 +74,9 @@ public class FilterActivity extends AppCompatActivity implements DatePickerDialo
     // attach to an onclick handler to show the date picker
     public void showDatePickerDialog(View v) {
         DatePickerFragment newFragment = new DatePickerFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(INTENT_CALENDAR, filters.getStartDate());
+        newFragment.setArguments(bundle);
         newFragment.show(getSupportFragmentManager(), "datePicker");
     }
 
@@ -79,8 +88,8 @@ public class FilterActivity extends AppCompatActivity implements DatePickerDialo
         c.set(Calendar.YEAR, year);
         c.set(Calendar.MONTH, monthOfYear);
         c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        SearchFilters.getInstance().setStartDate(c);
-        tvStartDate.setText(SearchFilters.getInstance().getStartDateHumanString());
+        filters.setStartDate(c);
+        tvStartDate.setText(filters.getStartDateHumanString());
     }
 
     public void setSpinnerToValue(Spinner spinner, String value) {
@@ -98,11 +107,19 @@ public class FilterActivity extends AppCompatActivity implements DatePickerDialo
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String sort = (String) parent.getItemAtPosition(position);
-        SearchFilters.getInstance().setSort(sort);
+        filters.setSort(sort);
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+
+    public void onSubmit(View view) {
+        Intent intent = new Intent();
+        intent.putExtra(SearchActivity.INTENT_FILTER, filters);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 }

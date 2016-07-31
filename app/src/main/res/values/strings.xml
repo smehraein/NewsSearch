@@ -5,4 +5,6 @@
     <string name="search">Search</string>
     <string name="article_thumbnail">Article Thumbnail</string>
     <string name="title_activity_article">ArticleActivity</string>
+    <string name="set_date_filter">Set Date Filter</string>
+    <string name="save">Save</string>
 </resources>
