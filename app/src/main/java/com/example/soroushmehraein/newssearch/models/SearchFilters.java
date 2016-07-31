@@ -4,9 +4,12 @@ import android.text.TextUtils;
 
 import com.loopj.android.http.RequestParams;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Author: soroushmehraein
@@ -18,9 +21,14 @@ public class SearchFilters {
             "Culture", "Energy", "Movies", "Opinion", "Politics", "Science", "Technology");
 
     private String sort;
-    private String startDate;
-    private ArrayList<String> newsDesks = new ArrayList<>();
+    private Calendar startDate;
+    private ArrayList<String> newsDesks;
     private String query;
+
+    private SimpleDateFormat dateFormatQuery = new SimpleDateFormat("yyyyMMdd", Locale.US);
+    private SimpleDateFormat dateFormatHuman = new SimpleDateFormat("MM/dd/yy", Locale.US);
+    private static final String SORT_NEWEST = "newest";
+    private static final String SORT_OLDEST = "oldest";
 
 
     private static SearchFilters ourInstance = new SearchFilters();
@@ -30,14 +38,26 @@ public class SearchFilters {
     }
 
     private SearchFilters() {
+        newsDesks = new ArrayList<>();
+        sort = SORT_NEWEST;
+        startDate = Calendar.getInstance();
+        startDate.add(Calendar.YEAR, -1);
     }
 
     public String getSort() {
         return sort;
     }
 
-    public String getStartDate() {
+    public Calendar getStartDate() {
         return startDate;
+    }
+
+    private String getStartDateQueryString() {
+        return dateFormatQuery.format(startDate.getTime());
+    }
+
+    public String getStartDateHumanString() {
+        return dateFormatHuman.format(startDate.getTime());
     }
 
     public ArrayList<String> getNewsDesks() {
@@ -48,7 +68,7 @@ public class SearchFilters {
         this.sort = sort;
     }
 
-    public void setStartDate(String startDate) {
+    public void setStartDate(Calendar startDate) {
         this.startDate = startDate;
     }
 
@@ -76,7 +96,7 @@ public class SearchFilters {
     public RequestParams toRequestParams() {
         RequestParams params = new RequestParams();
         params.put("q", query);
-        params.put("begin_date", startDate);
+        params.put("begin_date", getStartDateQueryString());
         params.put("sort", sort);
         params.put("fq", newsDesksQueryString());
         return params;

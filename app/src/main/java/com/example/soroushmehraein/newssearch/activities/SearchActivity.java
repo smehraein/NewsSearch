@@ -113,4 +113,9 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
     }
+
+    public void showFilters(MenuItem item) {
+        Intent intent = new Intent(SearchActivity.this, FilterActivity.class);
+        startActivity(intent);
+    }
 }
