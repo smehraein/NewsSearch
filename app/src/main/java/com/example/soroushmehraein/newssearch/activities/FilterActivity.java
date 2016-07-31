@@ -44,24 +44,21 @@ public class FilterActivity extends AppCompatActivity implements DatePickerDialo
     private void createCheckboxes() {
         LinearLayout layout = (LinearLayout) findViewById(R.id.llCheckbox);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        for (int i = 0; i < SearchFilters.NEWS_DESKS.size(); i++) {
-            String newsDesk = SearchFilters.NEWS_DESKS.get(i);
+        for (int i = 0; i < SearchFilters.NEWS.values().length; i++) {
+            SearchFilters.NEWS newsDesk = SearchFilters.NEWS.values()[i];
             CheckBox checkbox = new CheckBox(this);
             checkbox.setLayoutParams(layoutParams);
-            checkbox.setText(newsDesk);
+            checkbox.setText(newsDesk.name());
             checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (isChecked) {
-                        SearchFilters.getInstance().addNewsDesk((String) buttonView.getText());
-                    } else {
-                        SearchFilters.getInstance().removeNewsDesk((String) buttonView.getText());
-                    }
+                    String newsDesk = (String) buttonView.getText();
+                    SearchFilters.NEWS newsDeskEnum = SearchFilters.NEWS.valueOf(newsDesk);
+                    SearchFilters.getInstance().setNewsDesk(newsDeskEnum, isChecked);
                 }
             });
-            if (SearchFilters.getInstance().getNewsDesks().contains(newsDesk)) {
-                checkbox.setChecked(true);
-            }
+            Boolean checked = SearchFilters.getInstance().checkNewsDesk(newsDesk);
+            checkbox.setChecked(checked);
             assert layout != null;
             layout.addView(checkbox);
         }

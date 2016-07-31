@@ -6,9 +6,8 @@ import com.loopj.android.http.RequestParams;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Locale;
 
 /**
@@ -17,34 +16,49 @@ import java.util.Locale;
  * Date: 7/28/16
  */
 public class SearchFilters {
-    public static final List<String> NEWS_DESKS = Arrays.asList("Business","Movies", "Opinion", "Politics", "Technology");
+    public enum NEWS {
+        Business, Movies, Opinion, Politics, Technology
+    }
 
     private String sort;
     private Calendar startDate;
-    private ArrayList<String> newsDesks;
-    private String query;
+    private HashMap<String, Boolean> newsDesksMap;
 
+    private String query;
     private SimpleDateFormat dateFormatQuery = new SimpleDateFormat("yyyyMMdd", Locale.US);
+
     private SimpleDateFormat dateFormatHuman = new SimpleDateFormat("MM/dd/yy", Locale.US);
     private static final String SORT_NEWEST = "newest";
     private static final String SORT_OLDEST = "oldest";
-
-
     private static SearchFilters ourInstance = new SearchFilters();
+
 
     public static SearchFilters getInstance() {
         return ourInstance;
     }
 
     private SearchFilters() {
-        newsDesks = new ArrayList<>();
         sort = SORT_NEWEST;
         startDate = Calendar.getInstance();
         startDate.add(Calendar.YEAR, -1);
+        newsDesksMap = new HashMap<>();
     }
 
     public String getSort() {
         return sort;
+    }
+
+    public Boolean checkNewsDesk(NEWS desk) {
+        Boolean result = newsDesksMap.get(desk.name());
+        if (result == null) {
+            return Boolean.FALSE;
+        } else {
+            return result;
+        }
+    }
+
+    public void setNewsDesk(NEWS desk, Boolean filtered) {
+        newsDesksMap.put(desk.name(), filtered);
     }
 
     public Calendar getStartDate() {
@@ -59,33 +73,12 @@ public class SearchFilters {
         return dateFormatHuman.format(startDate.getTime());
     }
 
-    public ArrayList<String> getNewsDesks() {
-        return newsDesks;
-    }
-
     public void setSort(String sort) {
         this.sort = sort;
     }
 
     public void setStartDate(Calendar startDate) {
         this.startDate = startDate;
-    }
-
-    public void setNewsDesks(ArrayList<String> newsDesks) {
-        ArrayList<String> formattedNewsDesks = new ArrayList<>();
-        for (int i = 0; i < newsDesks.size(); i++) {
-            formattedNewsDesks.add("\"" + newsDesks.get(i) + "\"");
-        }
-        this.newsDesks = formattedNewsDesks;
-    }
-
-    public void addNewsDesk(String newsDesk) {
-        String formattedNewsDesk = "\"" + newsDesk + "\"";
-        newsDesks.add(formattedNewsDesk);
-    }
-
-    public void removeNewsDesk(String newsDesk) {
-        newsDesks.remove(newsDesk);
     }
 
     public void setQuery(String query) {
@@ -102,8 +95,11 @@ public class SearchFilters {
     }
 
     private String newsDesksQueryString() {
-        if (newsDesks.isEmpty()) {
-            return null;
+        ArrayList<String> newsDesks = new ArrayList<>();
+        for (String key : newsDesksMap.keySet()) {
+            if (newsDesksMap.get(key)) {
+                newsDesks.add(String.format("\"%s\"", key));
+            }
         }
         String desks = TextUtils.join(" ", newsDesks);
         return String.format("news_desk:(%s)", desks);
