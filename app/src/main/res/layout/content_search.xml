@@ -39,5 +39,5 @@
         android:id="@+id/gvResults"
         android:layout_below="@+id/btnSearch"
         android:layout_centerHorizontal="true"
-        android:numColumns="4"/>
+        android:numColumns="3"/>
 </RelativeLayout>

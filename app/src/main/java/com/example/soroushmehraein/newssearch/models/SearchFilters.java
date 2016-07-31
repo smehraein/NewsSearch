@@ -101,6 +101,9 @@ public class SearchFilters {
                 newsDesks.add(String.format("\"%s\"", key));
             }
         }
+        if (newsDesks.isEmpty()) {
+            return null;
+        }
         String desks = TextUtils.join(" ", newsDesks);
         return String.format("news_desk:(%s)", desks);
     }
