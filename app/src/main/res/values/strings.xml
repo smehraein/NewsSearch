@@ -7,4 +7,5 @@
     <string name="title_activity_article">ArticleActivity</string>
     <string name="set_date_filter">Set Date Filter</string>
     <string name="save">Save</string>
+    <string name="search_tb">Search</string>
 </resources>

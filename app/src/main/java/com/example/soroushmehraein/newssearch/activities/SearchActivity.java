@@ -2,7 +2,9 @@ package com.example.soroushmehraein.newssearch.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -89,6 +91,23 @@ public class SearchActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_search, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                adapter.clear();
+                filters.setQuery(query);
+                searchForArticles(0);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
         return true;
     }
 
@@ -109,14 +128,13 @@ public class SearchActivity extends AppCompatActivity {
 
     public void onArticleSearch(View view) {
         adapter.clear();
+        String query = etQuery.getText().toString();
+
+        filters.setQuery(query);
         searchForArticles(0);
     }
 
     private void searchForArticles(int page) {
-        String query = etQuery.getText().toString();
-
-        filters.setQuery(query);
-
         NytClient nytClient = NytClient.getInstance();
 
         if (!nytClient.isOnline()) {
