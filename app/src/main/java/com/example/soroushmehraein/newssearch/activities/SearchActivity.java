@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import com.example.soroushmehraein.newssearch.EndlessScrollListener;
 import com.example.soroushmehraein.newssearch.R;
@@ -117,6 +118,10 @@ public class SearchActivity extends AppCompatActivity {
         filters.setQuery(query);
 
         NytClient nytClient = NytClient.getInstance();
+
+        if (!nytClient.isOnline()) {
+            Toast.makeText(this, "No internet connection", Toast.LENGTH_LONG).show();
+        }
 
         nytClient.getArticlesAsync(this, filters.toRequestParams(), page, new JsonHttpResponseHandler(){
             @Override

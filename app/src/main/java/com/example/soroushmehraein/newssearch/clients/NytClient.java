@@ -7,6 +7,8 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import java.io.IOException;
+
 /**
  * Author: soroushmehraein
  * Project: NewsSearch
@@ -30,5 +32,15 @@ public class NytClient {
         AsyncHttpClient client = new AsyncHttpClient();
 
         client.get(BASE_URL, params, handler);
+    }
+
+    public boolean isOnline() {
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
+            int     exitValue = ipProcess.waitFor();
+            return (exitValue == 0);
+        } catch (IOException | InterruptedException e) { e.printStackTrace(); }
+        return false;
     }
 }
