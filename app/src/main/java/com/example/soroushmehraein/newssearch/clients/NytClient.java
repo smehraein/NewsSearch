@@ -23,10 +23,10 @@ public class NytClient {
     private NytClient() {
     }
 
-    public void getArticlesAsync(Context context, RequestParams params, JsonHttpResponseHandler handler) {
+    public void getArticlesAsync(Context context, RequestParams params, int page, JsonHttpResponseHandler handler) {
         String api_key = context.getResources().getString(R.string.nyt_api_key);
         params.put("api_key", api_key);
-        params.put("page", 0);
+        params.put("page", page);
         AsyncHttpClient client = new AsyncHttpClient();
 
         client.get(BASE_URL, params, handler);

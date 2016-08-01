@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 
+import com.example.soroushmehraein.newssearch.EndlessScrollListener;
 import com.example.soroushmehraein.newssearch.R;
 import com.example.soroushmehraein.newssearch.adapters.ArticleArrayAdapter;
 import com.example.soroushmehraein.newssearch.clients.NytClient;
@@ -73,6 +74,14 @@ public class SearchActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        gvResults.setOnScrollListener(new EndlessScrollListener() {
+            @Override
+            public boolean onLoadMore(int page, int totalItemsCount) {
+                searchForArticles(page);
+                return true;
+            }
+        });
     }
 
     @Override
@@ -98,20 +107,24 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     public void onArticleSearch(View view) {
+        adapter.clear();
+        searchForArticles(0);
+    }
+
+    private void searchForArticles(int page) {
         String query = etQuery.getText().toString();
 
         filters.setQuery(query);
 
         NytClient nytClient = NytClient.getInstance();
 
-        nytClient.getArticlesAsync(this, filters.toRequestParams(), new JsonHttpResponseHandler(){
+        nytClient.getArticlesAsync(this, filters.toRequestParams(), page, new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 JSONArray articleJsonResults;
 
                 try {
                     articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
-                    adapter.clear();
                     adapter.addAll(Article.fromJsonArray(articleJsonResults));
                 } catch (JSONException e) {
                     e.printStackTrace();
