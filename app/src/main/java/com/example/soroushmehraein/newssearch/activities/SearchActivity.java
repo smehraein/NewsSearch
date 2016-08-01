@@ -10,8 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.Toast;
 
@@ -38,9 +36,7 @@ public class SearchActivity extends AppCompatActivity {
     public static int FILTER_CODE = 100;
 
 
-    EditText etQuery;
     GridView gvResults;
-    Button btnSearch;
     SearchFilters filters;
 
     ArrayList<Article> articles;
@@ -59,9 +55,7 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void setupViews() {
-        etQuery = (EditText) findViewById(R.id.etQuery);
         gvResults = (GridView) findViewById(R.id.gvResults);
-        btnSearch = (Button) findViewById(R.id.btnSearch);
         articles = new ArrayList<>();
         adapter = new ArticleArrayAdapter(this, articles);
         gvResults.setAdapter(adapter);
@@ -124,14 +118,6 @@ public class SearchActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public void onArticleSearch(View view) {
-        adapter.clear();
-        String query = etQuery.getText().toString();
-
-        filters.setQuery(query);
-        searchForArticles(0);
     }
 
     private void searchForArticles(int page) {

@@ -45,6 +45,8 @@ public class ArticleArrayAdapter extends ArrayAdapter<Article> {
 
         if (!TextUtils.isEmpty(thumbnail)) {
             Picasso.with(getContext()).load(thumbnail).into(imageView);
+        } else {
+            imageView.setImageResource(R.drawable.ic_texture_black_24dp);
         }
 
         return convertView;

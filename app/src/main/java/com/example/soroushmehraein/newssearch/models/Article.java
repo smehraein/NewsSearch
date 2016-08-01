@@ -1,10 +1,12 @@
 package com.example.soroushmehraein.newssearch.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -12,7 +14,7 @@ import java.util.ArrayList;
  * Project: NewsSearch
  * Date: 7/25/16.
  */
-public class Article implements Serializable {
+public class Article implements Parcelable {
 
     String webUrl;
     String headline;
@@ -61,4 +63,34 @@ public class Article implements Serializable {
     public String getThumbnail() {
         return thumbnail;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.webUrl);
+        dest.writeString(this.headline);
+        dest.writeString(this.thumbnail);
+    }
+
+    protected Article(Parcel in) {
+        this.webUrl = in.readString();
+        this.headline = in.readString();
+        this.thumbnail = in.readString();
+    }
+
+    public static final Parcelable.Creator<Article> CREATOR = new Parcelable.Creator<Article>() {
+        @Override
+        public Article createFromParcel(Parcel source) {
+            return new Article(source);
+        }
+
+        @Override
+        public Article[] newArray(int size) {
+            return new Article[size];
+        }
+    };
 }
